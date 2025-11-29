@@ -54,26 +54,23 @@ namespace AuriStore.UI.Tests.Tests
 
             try
             {
-                // Esperar a que aparezca el popup de SweetAlert2
+                
                 wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.ClassName("swal2-popup")));
 
-                // Leer texto del popup
+                
                 var alertTitle = driver.FindElement(By.ClassName("swal2-title")).Text;
                 var alertMessage = driver.FindElement(By.ClassName("swal2-html-container")).Text;
 
                 Console.WriteLine("Título encontrado: " + alertTitle);
                 Console.WriteLine("Mensaje encontrado: " + alertMessage);
 
-                // Validar título real
+                
                 Assert.IsTrue(alertTitle.Contains("Error") || alertTitle.Contains("¡Error!"),
                               "El título del popup no coincide con el esperado.");
 
-                // VALIDAR EL MENSAJE EXACTO QUE MUESTRA TU SISTEMA
+               
                 Assert.IsTrue(
-                alertMessage.Contains("incorrectos", StringComparison.OrdinalIgnoreCase) ||
-                alertMessage.Contains("credenciales", StringComparison.OrdinalIgnoreCase) ||
-                alertMessage.Contains("inválidas", StringComparison.OrdinalIgnoreCase) ||
-                alertMessage.Contains("Error al conectar", StringComparison.OrdinalIgnoreCase),
+                alertMessage.Contains("incorrectos", StringComparison.OrdinalIgnoreCase),
                 "El mensaje del popup no coincide con ningún mensaje esperado."
 );
             }
@@ -88,22 +85,19 @@ namespace AuriStore.UI.Tests.Tests
         {
             var loginPage = new LoginPage(driver!);
 
-            // ❗ No ingresar email ni contraseña
             string email = "";
             string password = "";
 
             loginPage.Login(email, password);
 
-            // Esperar unos segundos para validar que NO hubo navegación
             Thread.Sleep(1500);
 
-            // 1️⃣ Validar que SIGUE en la pantalla de login
             bool sigueEnLogin = driver!.Url.Contains("auth.html")
                                 || driver.PageSource.Contains("Iniciar Sesión");
 
             Assert.IsTrue(sigueEnLogin, "El sistema permitió continuar con campos vacíos, lo cual es incorrecto.");
 
-            // 2️⃣ Validar que NO apareció SweetAlert2
+            
             var alertas = driver.FindElements(By.ClassName("swal2-popup"));
             bool noMostroAlert = alertas.Count == 0;
 
